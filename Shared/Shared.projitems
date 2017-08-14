@@ -15,6 +15,6 @@
     <None Include="$(MSBuildThisFileDirectory)NuGet\CreatePackage.bat" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)NuGet\Icon.png" />
+    <None Include="$(MSBuildThisFileDirectory)NuGet\Icon.png" />
   </ItemGroup>
 </Project>
