@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Zebble.Grid</id>
-    <version>3.12.137</version>
+    <version>3.12.140</version>
     <title>Grid for Zebble (Xamarin)</title>
     <projectUrl>https://github.com/Geeksltd/Zebble.Grid</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/Geeksltd/Zebble.Grid/master/Shared/NuGet/Icon.png</iconUrl>
