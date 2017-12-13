@@ -6,7 +6,7 @@ namespace Zebble
 
     partial class Grid<TSource, TCellTemplate>
     {
-        int VisibleItems = 0;
+        int VisibleItems;
         float GridHeight = 0;
         bool IsLazyLoadingMore, lazyLoad;
         ScrollView ParentScroller;

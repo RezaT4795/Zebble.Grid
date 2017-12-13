@@ -32,7 +32,7 @@
         {
             await base.OnInitializing();
 
-            await Add(EmptyTemplateView.Ignored(dataSource.Any()));
+            await Add(emptyTemplate.Ignored(dataSource.Any()));
 
             if (ItemViews.None()) await UpdateSource(DataSource);
         }
@@ -45,7 +45,7 @@
             set => UpdateSource(value).RunInParallel();
         }
 
-        async Task OnEmptyTemplateChanged(GridEmptyTemplateChangedArg args)
+        async Task OnEmptyTemplateChanged(EmptyTemplateChangedArg args)
         {
             if (!AllChildren.Contains(args.OldView)) return;
 
@@ -57,10 +57,10 @@
         {
             lock (DataSourceSyncLock) dataSource = new ConcurrentList<TSource>(source);
 
-            foreach (var item in AllChildren.Except(EmptyTemplateView).Reverse().ToArray())
+            foreach (var item in AllChildren.Except(emptyTemplate).Reverse().ToArray())
                 await Remove(item);
 
-            EmptyTemplateView.Style.Ignored = dataSource.Any();
+            emptyTemplate.Ignored(dataSource.Any());
 
             if (LazyLoad)
             {
@@ -83,46 +83,34 @@
         }
     }
 
-    public class GridEmptyTemplateChangedArg
-    {
-        public GridEmptyTemplateChangedArg(View oldView, View newView)
-        {
-            OldView = oldView;
-            NewView = newView;
-        }
-
-        public View OldView { get; set; }
-        public View NewView { get; set; }
-    };
-
     public class Grid : Stack
     {
-        public View EmptyTemplateView = new TextView { Id = "EmptyTextLabel" };
-        public readonly AsyncEvent<GridEmptyTemplateChangedArg> EmptyTemplateChanged = new AsyncEvent<GridEmptyTemplateChangedArg>();
+        public readonly AsyncEvent<EmptyTemplateChangedArg> EmptyTemplateChanged = new AsyncEvent<EmptyTemplateChangedArg>();
 
         public string EmptyText
         {
             get
             {
-                var emptyTextView = EmptyTemplateView as TextView;
+                var emptyTextView = emptyTemplate as TextView;
                 if (emptyTextView == null) return string.Empty;
                 else return emptyTextView.Text;
             }
             set
             {
-                var emptyTextView = EmptyTemplateView as TextView;
+                var emptyTextView = emptyTemplate as TextView;
                 if (emptyTextView == null) return;
                 else emptyTextView.Text = value;
             }
         }
 
+        protected View emptyTemplate = new TextView { Id = "EmptyTextLabel" };
         public View EmptyTemplate
         {
-            get => EmptyTemplateView;
+            get => emptyTemplate;
             set
             {
-                EmptyTemplateChanged.Raise(new GridEmptyTemplateChangedArg(EmptyTemplateView, value));
-                EmptyTemplateView = value;
+                EmptyTemplateChanged.Raise(new EmptyTemplateChangedArg(emptyTemplate, value));
+                emptyTemplate = value;
             }
         }
         Stack CurrentStack;
@@ -130,7 +118,7 @@
 
         public override async Task<TView> AddAt<TView>(int index, TView child, bool awaitNative = false)
         {
-            if (child == EmptyTemplateView)
+            if (child == emptyTemplate)
             {
                 await base.AddAt(index, child, awaitNative);
                 return child;
@@ -161,5 +149,17 @@
             while (CurrentStack.AllChildren.Count < Columns)
                 await CurrentStack.Add(new Canvas());
         }
+
+        public class EmptyTemplateChangedArg
+        {
+            public EmptyTemplateChangedArg(View oldView, View newView)
+            {
+                OldView = oldView;
+                NewView = newView;
+            }
+
+            public View OldView { get; set; }
+            public View NewView { get; set; }
+        };
     }
 }
