@@ -11,6 +11,11 @@ namespace Zebble
         bool IsLazyLoadingMore, lazyLoad;
         ScrollView ParentScroller;
 
+        /// <summary>
+        /// This event will be fired when all datasource items are rendered and added to the grid. 
+        /// </summary>
+        public readonly AsyncEvent LazyLoadEnded = new AsyncEvent();
+
         public bool LazyLoad
         {
             get => lazyLoad;
@@ -100,6 +105,7 @@ namespace Zebble
             if (next == null)
             {
                 if (ExactColumns) await EnsureFullColumns();
+                await LazyLoadEnded.Raise();
                 return false;
             }
 
