@@ -3,6 +3,7 @@ namespace Zebble
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+    using Zebble.Device;
 
     partial class Grid<TSource, TCellTemplate>
     {
@@ -27,7 +28,7 @@ namespace Zebble
             if (LazyLoad)
             {
                 ParentScroller = FindParent<ScrollView>();
-                ParentScroller?.UserScrolledVertically.HandleOn(Device.ThreadPool, OnUserScrolledVertically);
+                ParentScroller?.UserScrolledVertically.HandleOn(Thread.Pool, OnUserScrolledVertically);
 
                 await LazyLoadInitialItems();
             }
@@ -46,7 +47,7 @@ namespace Zebble
             {
                 if (!await LazyLoadMore()) break;
 
-                if (Device.Platform == DevicePlatform.IOS) await Task.Delay(Animation.OneFrame);
+                if (OS.Platform.IsIOS()) await Task.Delay(Animation.OneFrame);
             }
 
             IsLazyLoadingMore = false;
