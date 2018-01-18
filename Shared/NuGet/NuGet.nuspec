@@ -2,11 +2,11 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Zebble.Grid</id>
-    <version>3.12.147</version>
+    <version>3.12.148</version>
     <title>Grid for Zebble (Xamarin)</title>
     <projectUrl>https://github.com/Geeksltd/Zebble.Grid</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/Geeksltd/Zebble.Grid/master/Shared/NuGet/Icon.png</iconUrl>
-    <copyright>Copyright ©2017 Geeks Ltd - All rights reserved.</copyright>
+    <copyright>Copyright © 2018 Geeks Ltd - All rights reserved.</copyright>
     <description>A Grid is similar to ListView but instead of a single column it allows you to set the Columns (int) property.
 	The items in the data source will be rendered using the provided Template class.
 	Each row will be filled first before moving to the next row.Native Map component for Zebble apps.</description>
