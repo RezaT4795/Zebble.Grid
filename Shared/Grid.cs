@@ -32,7 +32,7 @@
         {
             await base.OnInitializing();
 
-            await Add(emptyTemplate.Ignored(dataSource.Any()));
+            emptyTemplate?.Ignored(dataSource.Any());
 
             if (ItemViews.None()) await UpdateSource(DataSource);
         }
@@ -60,7 +60,7 @@
             foreach (var item in AllChildren.Except(emptyTemplate).Reverse().ToArray())
                 await Remove(item);
 
-            emptyTemplate.Ignored(dataSource.Any());
+            emptyTemplate?.Ignored(dataSource.Any());
 
             if (LazyLoad)
             {
@@ -87,43 +87,15 @@
     {
         public readonly AsyncEvent<EmptyTemplateChangedArg> EmptyTemplateChanged = new AsyncEvent<EmptyTemplateChangedArg>();
 
-        public string EmptyText
-        {
-            get
-            {
-                var emptyTextView = emptyTemplate as TextView;
-                if (emptyTextView == null) return string.Empty;
-                else return emptyTextView.Text;
-            }
-            set
-            {
-                var emptyTextView = emptyTemplate as TextView;
-                if (emptyTextView == null) return;
-                else emptyTextView.Text = value;
-            }
-        }
+        protected View emptyTemplate => FindDescendent<EmptyTemplate>();
 
-        protected View emptyTemplate = new TextView { Id = "EmptyTextLabel" };
-        public View EmptyTemplate
-        {
-            get => emptyTemplate;
-            set
-            {
-                EmptyTemplateChanged.Raise(new EmptyTemplateChangedArg(emptyTemplate, value));
-                emptyTemplate = value;
-            }
-        }
+        public class EmptyTemplate : Canvas { }
+
         Stack CurrentStack;
         public int Columns { get; set; } = 2;
 
         public override async Task<TView> AddAt<TView>(int index, TView child, bool awaitNative = false)
         {
-            if (child == emptyTemplate)
-            {
-                await base.AddAt(index, child, awaitNative);
-                return child;
-            }
-
             if (index < AllChildren.Count)
                 throw new NotImplementedException("AddAt() for adding items in the middle of a grid is not implemented yet.");
 
