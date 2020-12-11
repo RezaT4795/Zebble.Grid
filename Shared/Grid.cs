@@ -103,11 +103,10 @@
             {
                 // Create a new row:
                 await base.AddAt(AllChildren.Count,
-                    CurrentStack = new Stack { Direction = RepeatDirection.Horizontal, Id = "Grid-Row" }, awaitNative)
-                    .DropContext();
+                    CurrentStack = new Stack { Direction = RepeatDirection.Horizontal, Id = "Grid-Row" }, awaitNative);
             }
 
-            return await CurrentStack.Add(child, awaitNative).DropContext();
+            return await CurrentStack.Add(child, awaitNative);
         }
 
         /// <summary>
