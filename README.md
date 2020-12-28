@@ -1,4 +1,4 @@
-[logo]: https://raw.githubusercontent.com/Geeksltd/Zebble.Grid/master/Shared/NuGet/Icon.png "Zebble.Grid"
+[logo]: https://raw.githubusercontent.com/Geeksltd/Zebble.Grid/master/icon.png "Zebble.Grid"
 
 
 ## Zebble.Grid
