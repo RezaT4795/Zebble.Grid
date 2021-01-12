@@ -7,7 +7,7 @@
     <RootNamespace>Zebble</RootNamespace>
     <PackageId>Zebble.Grid</PackageId>
     <Product>$(AssemblyName) ($(TargetFramework))</Product>
-    <Version>3.12.157.0</Version>
+    <Version>3.12.158.0</Version>
     <PackOnBuild>true</PackOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
     <LangVersion>default</LangVersion>
