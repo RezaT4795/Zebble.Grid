@@ -7,7 +7,7 @@
     <RootNamespace>Zebble</RootNamespace>
     <PackageId>Zebble.Grid</PackageId>
     <Product>$(AssemblyName) ($(TargetFramework))</Product>
-    <Version>3.12.158.0</Version>
+    <Version>3.12.159.0</Version>
     <PackOnBuild>true</PackOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
     <LangVersion>default</LangVersion>
@@ -67,7 +67,7 @@
     <None Remove="Zebble-LicenseAgreement.txt" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Zebble" Version="4.5.444" />
+    <PackageReference Include="Zebble" Version="4.5.445" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Android\" />
