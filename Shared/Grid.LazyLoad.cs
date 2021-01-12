@@ -4,6 +4,7 @@ namespace Zebble
     using System.Linq;
     using System.Threading.Tasks;
     using Zebble.Device;
+    using Olive;
 
     partial class Grid<TSource, TCellTemplate>
     {
@@ -63,7 +64,7 @@ namespace Zebble
             lastItem.ApplyCssToBranch().Wait();
 
             if (lastItem.Height.AutoOption.HasValue || lastItem.Height.PercentageValue.HasValue)
-                Device.Log.Error("Items in a lazy loaded grid must have an explicit height value.");
+                Log.For(this).Error(null, "Items in a lazy loaded grid must have an explicit height value.");
 
             return Padding.Vertical() +
                 (float)Math.Ceiling((double)dataSource.Count / Columns) * lastItem.CalculateTotalHeight();
