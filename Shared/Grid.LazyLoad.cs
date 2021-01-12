@@ -64,7 +64,7 @@ namespace Zebble
             lastItem.ApplyCssToBranch().Wait();
 
             if (lastItem.Height.AutoOption.HasValue || lastItem.Height.PercentageValue.HasValue)
-                Log.For(this).Error(null, "Items in a lazy loaded grid must have an explicit height value.");
+                Log.For(this).Error("Items in a lazy loaded grid must have an explicit height value.");
 
             return Padding.Vertical() +
                 (float)Math.Ceiling((double)dataSource.Count / Columns) * lastItem.CalculateTotalHeight();
