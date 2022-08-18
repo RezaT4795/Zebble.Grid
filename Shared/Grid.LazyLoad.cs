@@ -5,6 +5,7 @@ namespace Zebble
     using System.Threading.Tasks;
     using Zebble.Device;
     using Olive;
+    using System.Threading;
 
     partial class Grid<TSource, TCellTemplate>
     {
@@ -31,7 +32,7 @@ namespace Zebble
                 ParentScroller = FindParent<ScrollView>();
                 ParentScroller?.UserScrolledVertically.HandleOn(Thread.Pool, OnUserScrolledVertically);
 
-                await LazyLoadInitialItems();
+                await LazyLoadInitialItems(CancellationToken.None);
             }
         }
 
@@ -70,9 +71,9 @@ namespace Zebble
                 (float)Math.Ceiling((double)dataSource.Count / Columns) * lastItem.CalculateTotalHeight();
         }
 
-        Task LazyLoadInitialItems() => UIWorkBatch.Run(DoLazyLoadInitialItems);
+        Task LazyLoadInitialItems(CancellationToken token) => UIWorkBatch.Run(()=>DoLazyLoadInitialItems(token));
 
-        async Task DoLazyLoadInitialItems()
+        async Task DoLazyLoadInitialItems(CancellationToken token)
         {
             var visibleHeight = FindParent<ScrollView>()?.ActualHeight ?? Page?.ActualHeight ?? Root.ActualHeight;
             visibleHeight -= ActualY;
@@ -84,6 +85,8 @@ namespace Zebble
 
             while (GridHeight < visibleHeight && startIndex < DataSource.Count())
             {
+                if (token.IsCancellationRequested) return;
+
                 var item = await AddItem(DataSource[startIndex]);
                 startIndex++;
                 VisibleItems++;

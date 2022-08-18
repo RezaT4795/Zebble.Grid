@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using Olive;
 
@@ -41,7 +42,7 @@
 
         public List<TSource> DataSource
         {
-            get => dataSource.ToList();
+            get => dataSource.OrEmpty().ToList();
             set => UpdateSource(value).RunInParallel();
         }
 
@@ -53,24 +54,52 @@
             await Add(args.NewView.Ignored(dataSource.Any()));
         }
 
-        public async Task UpdateSource(IEnumerable<TSource> source)
+        Tuple<CancellationTokenSource, Task> currentlyUpdating;
+        object updateSourceLock = new object();
+
+        public Task UpdateSource(IEnumerable<TSource> source)
+        {
+            lock (updateSourceLock)
+            {
+                if (currentlyUpdating != null)
+                {
+                    currentlyUpdating.Item1.Cancel();
+                    currentlyUpdating.Item2.Wait(2000);
+                }
+                var token = new CancellationTokenSource();
+                currentlyUpdating = new Tuple<CancellationTokenSource, Task>(token, ApplyUpdate(source, token.Token));
+            }
+            return currentlyUpdating.Item2;
+            
+        }
+
+        async Task ApplyUpdate(IEnumerable<TSource> source, CancellationToken token)
         {
             lock (DataSourceSyncLock) dataSource = new ConcurrentList<TSource>(source);
 
             foreach (var item in AllChildren.Except(emptyTemplate).Reverse().ToArray())
+            {
+                if (token.IsCancellationRequested) return;
                 await Remove(item);
+            }
 
             emptyTemplate?.Ignored(dataSource.Any());
 
+            // For some unknown reason, without this the first item of the views won't get rendered
+            await Task.Delay(Animation.OneFrame);
+
             if (LazyLoad)
             {
-                if (IsShown) await LazyLoadInitialItems();
+                if (IsShown) await LazyLoadInitialItems(token);
             }
             else
             {
                 var views = DataSource.Select(x => new TCellTemplate { Item = x }).ToArray();
-
-                foreach (var v in views) await Add(v);
+                foreach (var view in views)
+                {
+                    if (token.IsCancellationRequested) return;
+                    await Add(view);
+                }
 
                 if (ExactColumns) await EnsureFullColumns();
             }
@@ -131,6 +160,6 @@
 
             public View OldView { get; set; }
             public View NewView { get; set; }
-        };
+        }
     }
 }

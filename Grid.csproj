@@ -6,7 +6,7 @@
     <RootNamespace>Zebble</RootNamespace>
     <PackageId>Zebble.Grid</PackageId>
     <Product>$(AssemblyName) ($(TargetFramework))</Product>
-    <Version>3.12.161.0</Version>
+    <Version>3.12.162.0</Version>
     <PackOnBuild>true</PackOnBuild>
     <NeutralLanguage>en</NeutralLanguage>
     <DefineConstants>$(DefineConstants)</DefineConstants>
@@ -26,7 +26,7 @@
     <PackageReleaseNotes>Minor fixes</PackageReleaseNotes>
     <Owners>Geeks Ltd</Owners>
     <Authors>Geeks Ltd</Authors>
-    <Copyright>Geeks Ltd 2021, All rights reserved.</Copyright>
+    <Copyright>Geeks Ltd 2022, All rights reserved.</Copyright>
     <DisableExtraReferences>true</DisableExtraReferences>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)'=='Debug' ">
@@ -56,8 +56,13 @@
   <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">
     <Compile Include="Android\**\*.cs" />
   </ItemGroup>
-  <ItemGroup Condition=" $(TargetFramework.StartsWith('Xamarin.iOS')) ">
-    <Compile Include="iOS\**\*.cs" />
+  <ItemGroup>
+    <EmbeddedResource Remove="Android\**" />
+    <EmbeddedResource Remove="iOS\**" />
+    <EmbeddedResource Remove="UWP\**" />
+    <None Remove="Android\**" />
+    <None Remove="iOS\**" />
+    <None Remove="UWP\**" />
   </ItemGroup>
   <ItemGroup>
     <None Remove=".gitignore" />
@@ -65,11 +70,9 @@
     <None Remove="Zebble-LicenseAgreement.txt" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Zebble" Version="4.5.504" />
+    <PackageReference Include="Zebble" Version="4.5.651" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Android\" />
-    <Folder Include="iOS\" />
-    <Folder Include="UWP\" />
-  </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="update-local-nuget-cache $(TargetDir)" />
+  </Target>
 </Project>
